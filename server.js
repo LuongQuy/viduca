@@ -6,7 +6,7 @@
 
 var app = require('./app');
 var debug = require('debug')('viduca:server');
-// var https = require('https');
+var https = require('https');
 // var http = require('http');
 var https = require('https');
 var fs = require('fs');
@@ -31,8 +31,6 @@ var options = {
 var server = https.createServer(options, app);
 // var server = http.createServer(app);
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
-// require('./modules/openvidu')(server);
 
 /**
  * Listen on provided port, on all network interfaces.
