@@ -1,0 +1,34 @@
+canvas{
+    width: auto;
+    height: 100%;
+    margin: 0px auto;
+}
+#currentNumber{
+    width: 35px;
+}
+#slideContainer{
+    /* width: 100%; */
+    height: 100%;
+    margin: 0px 0px;
+    position: relative;
+}
+#controlSlide{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    background-color: #3b3835;
+    /* margin-top: 0px !important; */
+}
+#slide{
+    width: auto;
+    height: 90%;
+    margin: auto;
+    display: flex;
+}
+#toolbar{
+    margin: auto;
+}
+.white{
+    color: #ffffff;
+    font-weight: bold;
+}

@@ -1,0 +1,143 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Course list</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="shortcut icon" type="image/png" href="/course/images/icon/favicon.ico"> -->
+    <link rel="stylesheet" href="../stylesheets/bootstrap4.0.0.min.css">
+    <link rel="stylesheet" href="../for-course-page/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../for-course-page/css/styles.css">
+    <link rel="stylesheet" href="../for-course-page/css/metisMenu.css">
+    <link rel="stylesheet" href="../for-course-page/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="../for-course-page/css/slicknav.min.css">
+    <link rel="stylesheet" href="../for-course-page/css/themify-icons.css">
+    <link rel="stylesheet" href="../for-course-page/css/typography.css">
+    <style>
+        a {
+            text-decoration: none !important;
+        }
+
+        div.gallery {
+            margin: 5px !important;
+            border: 1px solid #ccc !important;
+            float: left !important;
+            width: 180px !important;
+            padding: 0px !important;
+        }
+
+        div.gallery:hover {
+            border: 1px solid #777 !important;
+        }
+
+        div.gallery img {
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        div.desc {
+            padding: 15px !important;
+            text-align: center !important;
+        }
+    </style>
+</head>
+
+<body class="body-bg">
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+    <!-- preloader area end -->
+    <!-- main wrapper start -->
+    <div class="horizontal-main-wrapper">
+        <%- include('../layouts/header') %>
+        <!-- menu area start -->
+        <%- include('../layouts/menu') %>
+        <!-- menu area end -->
+        <!-- page title area end -->
+        <div class="main-content-inner">
+            <div class="container">
+                <div class="row" style="margin: 25px 15px 25px 15px">
+                    <div class="gallery col-md-2" style="height: 199px;">
+                        <a href="" data-toggle="modal" data-target="#myModal">
+                            <div class="desc" style="margin-top: 39%">
+                                <p>
+                                    <span style="font-size: 50px">+</span>
+                                    <br> Add new course
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <% if(courseList){ %>
+                        <% courseList.forEach(function(course){ %> 
+                                <div class="gallery center col-md-2">
+                                    <a target="_blank" href="/teacher/course-management-page?courseID=<%= course._id %>" style="color:black">
+                                        <img src="../images/avatar-course.jpg" alt="Forest" width="300" height="200">
+                                        <div style="margin: 15px 15px 15px 15px">
+                                            <font style="font-size: 15">
+                                                <b><%= course.name %></b>
+                                            </font>
+                                            <br>
+                                            <font style="font-size: 13"><%= course.description %>
+                                            </font>
+                                            <br>
+                                            <font style="font-size: 13">
+                                                <b>Instructor:</b> <%= instructor %></font>
+                                        </div>
+                                    </a>
+                                </div>
+                        <% }); %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title pull-left">Add new course</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" action="/teacher/create-new-course" method="post">
+                            <div class="form-group row">
+                                <label for="coursename" class="col-sm-2 col-form-label">Course name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="coursename" id="coursename" placeholder="Enter course name">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="description" class="col-sm-2 col-form-label">Description</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" id="description" name="description" placeholder="Enter description"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <!-- <input type="hidden" name="_csrf" value="{{csrfToken}}"> -->
+                                        <button type="submit" class="btn btn-info">Create</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- main content area end -->
+    </div>
+    <script src="../javascripts/jquery.min.js"></script>
+    <script src="../for-course-page/js/popper.min.js"></script>
+    <script src="../javascripts/bootstrap.min.js"></script>
+    <script src="../for-course-page/js/jquery.slicknav.min.js"></script>
+    <script src="../for-course-page/js/jquery.slimscroll.min.js"></script>
+    <script src="../for-course-page/js/metisMenu.min.js"></script>
+</body>
+
+</html>
