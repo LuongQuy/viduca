@@ -27,7 +27,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" href="/">
                         <img src="../images/logo-light.png" alt="">
                     </a>
                 </div>
@@ -123,6 +123,7 @@
     <script>
         var chatContent = document.getElementById('chat-content');
         var token = <%- JSON.stringify(token) %>;
+        if(token == ''){alert('token rong roi')}
         // const socket = io ('http://localhost:3000');
         const OV = new OpenVidu();
         session = OV.initSession();

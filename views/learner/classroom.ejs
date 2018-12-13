@@ -26,7 +26,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" href="/">
                         <img src="../images/logo-light.png" alt="">
                     </a>
                 </div>
@@ -84,27 +84,28 @@
             </div>
             <div class="col-md-3 border-left" style="height: 100%">
                 <div class="row">
-                    <div id="chat-panel" class="panel panel-default" style="border-radius: 0px;">
-                        <div class="panel-heading">
-                            <i class="fa fa-comments fa-fw"></i> Chat
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body" style="height: 199px">
-                            <ul class="chat" id="chat-content">
-                            </ul>
-                        </div>
-                        <!-- /.panel-body -->
-                        <div class="panel-footer">
-                            <div class="input-group">
-                                <input id="txtMessage" type="text" class="form-control input-sm" placeholder="Type your message here..." />
-                                <span class="input-group-btn">
-                                    <button class="btn btn-sm btn-info" id="btn-chat">
-                                        Send
-                                    </button>
-                                </span>
+                    <div id="chat-panel" class="panel panel-default">
+                        <div class="panel panel-primary" style="border-radius: 0px;">
+                            <div class="panel-heading" style="border-radius: 0px">
+                                <span class="glyphicon glyphicon-comment"></span> Chat
+                            </div>
+                            <div class="panel-body">
+                                <ul class="chat" id="chat-content">
+
+                                </ul>
+                            </div>
+                            <div class="panel-footer">
+                                <div class="input-group">
+                                    <input id="txtMessage" type="text" class="form-control input-sm" placeholder="Type your message here..." />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-warning btn-sm" id="btn-chat">
+                                            Send</button>
+                                        <input type="hidden" id="username" value="<%= username %>">
+                                        <input type="hidden" id="email" value="<%= email %>">
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        <!-- /.panel-footer -->
                     </div>
                     <!-- /.panel .chat-panel -->
                 </div>
@@ -112,10 +113,11 @@
         </div>
     </div>
     <script src="../javascripts/pdf.js"></script>
-    <script src="../javascripts/slide.js"></script>
+    <!-- <script src="../javascripts/slide.js"></script> -->
     <!-- <script src="../javascripts/socket.io.js"></script> -->
     <script src="../javascripts/openvidu-browser-2.6.0.js"></script>
     <script>
+        var chatContent = document.getElementById('chat-content');
         var token = <%- JSON.stringify(token) %>;
         // const socket = io ('http://localhost:3000');
         const OV = new OpenVidu();
@@ -124,12 +126,162 @@
             session.subscribe(event.stream, "remoteVideo");
         });
 
+        session.on('signal:chat', (event) => {
+            var data = event.data.split(/!/);
+            chatContent.innerHTML += `<li class="left clearfix">
+                                        <span class="chat-img pull-left">
+                                            <img src="./../images/avatar.png" alt="User Avatar" class="img-circle" />
+                                        </span>
+                                        <div class="chat-body clearfix">
+                                            <div class="header">
+                                                <strong class="primary-font">${data[0]}</strong>
+                                                <small class="pull-right text-muted">
+                                            </div>
+                                            <p>
+                                              ${data[1]}  
+                                            </p>
+                                        </div>
+                                    </li>`;
+        });
+
+        session.on('signal:change page slide', event => {
+            changePage(parseInt(event.data));
+            currentNumber.value = parseInt(event.data);
+        });
+
+        session.on('signal:next slide', event => {
+            changePage(parseInt(event.data));
+            currentNumber.value = parseInt(event.data);
+        });
+
+        session.on('signal:previous slide', event => {
+            changePage(parseInt(event.data));
+            currentNumber.value = parseInt(event.data);
+        });
+
         session.connect(token)
-        .then(() => {
-            var publisher = OV.initPublisher('localVideo');
-            session.publish(publisher);
-        })
-        .catch(err => console.log(err));
+            .then(() => {
+                var publisher = OV.initPublisher('localVideo');
+                session.publish(publisher);
+            })
+            .catch(err => console.log(err));
+
+        var btnChat = document.getElementById('btn-chat');
+        var txtMessage = document.getElementById('txtMessage');
+        const username = document.getElementById('username');
+        const email = document.getElementById('email');
+        btnChat.onclick = () => {
+            var user = '';
+            if (username.value != '') {
+                user = username.value;
+            } else {
+                user = email.value;
+            }
+            var messageData = user + '!' + txtMessage.value;
+            session.signal({
+                data: messageData,
+                to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
+                type: 'chat'             // The type of message (optional)
+            })
+                .then(() => {
+                    console.log('Message successfully sent');
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            txtMessage.value = '';
+        }
+        txtMessage.onkeydown = (event) => {
+            if (event.keyCode == 13) {
+                var user = '';
+                if (username.value != '') {
+                    user = username.value;
+                } else {
+                    user = email.value;
+                }
+                var messageData = user + '!' + txtMessage.value;
+                session.signal({
+                    data: messageData,
+                    to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
+                    type: 'chat'             // The type of message (optional)
+                })
+                    .then(() => {
+                        console.log('Message successfully sent');
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+                txtMessage.value = '';
+            }
+        }
+
+        // For slide present
+        var url = '../doc/test.pdf';
+        var currentNumber = document.getElementById('currentNumber');
+        var canvas = document.getElementById('the-canvas');
+        var context = canvas.getContext('2d');
+
+        var currentPage = document.getElementById('currentPage');
+        var obj = PDFJS.getDocument(url);
+        var maxPage;
+        obj.then(pdf => {
+            maxPage = pdf.pdfInfo.numPages;
+            document.getElementById('maxNumber').innerHTML = maxPage;
+        });
+        changePage(parseInt(currentNumber.value));
+        currentNumber.oninput = () => {
+            var number = parseInt(currentNumber.value);
+            if (number > 0 && number <= maxPage) {
+                changePage(parseInt(currentNumber.value));
+                session.signal({
+                    data: number,
+                    to: [],
+                    type: 'change page slide'
+                });
+            }
+        };
+        function changePage(pageNumber) {
+            obj.then(function (pdf) {
+                return pdf.getPage(pageNumber);
+            })
+                .then(function (page) {
+                    var scale = 1;
+                    var viewport = page.getViewport(scale);
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    var renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    page.render(renderContext);
+                });
+        }
+
+        document.getElementById('btnNext').onclick = () => {
+            var nextPage = parseInt(currentNumber.value) + 1;
+            if (nextPage <= maxPage) {
+                currentNumber.value = nextPage;
+                changePage(nextPage);
+                session.signal({
+                    data: nextPage,
+                    to: [],
+                    type: 'next slide'
+                });
+            }
+        }
+
+        document.getElementById('btnPre').onclick = () => {
+            var prePage = parseInt(currentNumber.value) - 1;
+            if (prePage > 0) {
+                currentNumber.value = prePage;
+                changePage(prePage);
+                session.signal({
+                    data: prePage,
+                    to: [],
+                    type: 'previous slide'
+                });
+            }
+        }
     </script>
 </body>
 
