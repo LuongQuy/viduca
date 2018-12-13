@@ -1,5 +1,6 @@
 const OpenVidu = require('openvidu-node-client').OpenVidu;
-const OV = new OpenVidu('http://45.77.242.35:4443', 'MY_SECRET');
+// const OV = new OpenVidu('http://45.77.242.35:4443', 'MY_SECRET');
+const OV = new OpenVidu('https://45.77.242.35:4443', 'MY_SECRET');
 var mapSessions = {};
 var mapSessionNamesTokens = {};
 
@@ -13,11 +14,15 @@ exports.getClassroom = (req, res, next) => {
             mapSessionNamesTokens[room].push(token);
             if(req.user.role === 'TEACHER'){
                 res.render('teacher/classroom', {
-                    token: token
+                    token: token,
+                    username: req.user.info.lastname + ' ' + req.user.info.firstname,
+                    email: req.user.local.email
                 });
             }else if(req.user.role === 'LEARNER'){
                 res.render('learner/classroom', {
-                    token: token
+                    token: token,
+                    username: req.user.info.lastname + ' ' + req.user.info.firstname,
+                    email: req.user.local.email
                 });
             }
         })
@@ -32,11 +37,15 @@ exports.getClassroom = (req, res, next) => {
                 mapSessionNamesTokens[room].push(token);
                 if(req.user.role === 'TEACHER'){
                     res.render('teacher/classroom', {
-                        token: token
+                        token: token,
+                        username: req.user.info.lastname + ' ' + req.user.info.firstname,
+                        email: req.user.local.email
                     });
                 }else if(req.user.role === 'LEARNER'){
                     res.render('learner/classroom', {
-                        token: token
+                        token: token,
+                        username: req.user.info.lastname + ' ' + req.user.info.firstname,
+                        email: req.user.local.email
                     });
                 }
             })

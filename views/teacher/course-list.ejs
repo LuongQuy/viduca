@@ -59,7 +59,7 @@
         <div class="main-content-inner">
             <div class="container">
                 <div class="row" style="margin: 25px 15px 25px 15px">
-                    <div class="gallery col-md-2" style="height: 199px;">
+                    <div class="gallery col-md-2" height="15vh">
                         <a href="" data-toggle="modal" data-target="#myModal">
                             <div class="desc" style="margin-top: 39%">
                                 <p>
@@ -72,7 +72,7 @@
 
                     <% if(courseList){ %>
                         <% courseList.forEach(function(course){ %> 
-                                <div class="gallery center col-md-2">
+                                <div class="gallery center col-md-2" height="15vh">
                                     <a target="_blank" href="/teacher/course-management-page?courseID=<%= course._id %>" style="color:black">
                                         <img src="../images/avatar-course.jpg" alt="Forest" width="300" height="200">
                                         <div style="margin: 15px 15px 15px 15px">
