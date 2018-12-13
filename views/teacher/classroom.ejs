@@ -89,13 +89,13 @@
             <div class="col-md-3 border-left" style="height: 100%">
                 <div class="row">
                     <div id="chat-panel" class="panel panel-default">
-                        <div class="panel panel-primary" style="border-radius: 0px;" >
+                        <div class="panel panel-primary" style="border-radius: 0px;">
                             <div class="panel-heading" style="border-radius: 0px">
                                 <span class="glyphicon glyphicon-comment"></span> Chat
                             </div>
                             <div class="panel-body">
                                 <ul class="chat" id="chat-content">
-                                    
+
                                 </ul>
                             </div>
                             <div class="panel-footer">
@@ -117,12 +117,12 @@
         </div>
     </div>
     <script src="../javascripts/pdf.js"></script>
-    <script src="../javascripts/slide.js"></script>
+    <!-- <script src="../javascripts/slide.js"></script> -->
     <!-- <script src="../javascripts/socket.io.js"></script> -->
     <script src="../javascripts/openvidu-browser-2.6.0.js"></script>
     <script>
         var chatContent = document.getElementById('chat-content');
-        var token = <%- JSON.stringify(token) %>
+        var token = <%- JSON.stringify(token) %>;
         // const socket = io ('http://localhost:3000');
         const OV = new OpenVidu();
         session = OV.initSession();
@@ -146,6 +146,21 @@
                                             </p>
                                         </div>
                                     </li>`;
+        });
+
+        session.on('signal:change page slide', event => {
+            changePage(parseInt(event.data));
+            currentNumber.value = parseInt(event.data);
+        });
+
+        session.on('signal:next slide', event => {
+            changePage(parseInt(event.data));
+            currentNumber.value = parseInt(event.data);
+        });
+
+        session.on('signal:previous slide', event => {
+            changePage(parseInt(event.data));
+            currentNumber.value = parseInt(event.data);
         });
 
         session.connect(token)
@@ -178,29 +193,97 @@
                 .catch(error => {
                     console.error(error);
                 });
-                txtMessage.value = '';
+            txtMessage.value = '';
         }
         txtMessage.onkeydown = (event) => {
-            if(event.keyCode == 13){
+            if (event.keyCode == 13) {
                 var user = '';
-            if (username.value != '') {
-                user = username.value;
-            } else {
-                user = email.value;
-            }
-            var messageData = user + '!' + txtMessage.value;
-            session.signal({
-                data: messageData,
-                to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
-                type: 'chat'             // The type of message (optional)
-            })
-                .then(() => {
-                    console.log('Message successfully sent');
+                if (username.value != '') {
+                    user = username.value;
+                } else {
+                    user = email.value;
+                }
+                var messageData = user + '!' + txtMessage.value;
+                session.signal({
+                    data: messageData,
+                    to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
+                    type: 'chat'             // The type of message (optional)
                 })
-                .catch(error => {
-                    console.error(error);
-                });
+                    .then(() => {
+                        console.log('Message successfully sent');
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
                 txtMessage.value = '';
+            }
+        }
+
+        // For slide present
+        var url = '../doc/test.pdf';
+        var currentNumber = document.getElementById('currentNumber');
+        var canvas = document.getElementById('the-canvas');
+        var context = canvas.getContext('2d');
+
+        var currentPage = document.getElementById('currentPage');
+        var obj = PDFJS.getDocument(url);
+        var maxPage;
+        obj.then(pdf => {
+            maxPage = pdf.pdfInfo.numPages;
+            document.getElementById('maxNumber').innerHTML = maxPage;
+        });
+        changePage(parseInt(currentNumber.value));
+        currentNumber.oninput = () => {
+            var number = parseInt(currentNumber.value);
+            if (number > 0 && number <= maxPage) {
+                changePage(parseInt(currentNumber.value));
+                session.signal({
+                    data: number,
+                    to: [],
+                    type: 'change page slide'
+                });
+            }
+        };
+        function changePage(pageNumber) {
+            obj.then(function (pdf) {
+                return pdf.getPage(pageNumber);
+            })
+                .then(function (page) {
+                    var scale = 1;
+                    var viewport = page.getViewport(scale);
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    var renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    page.render(renderContext);
+                });
+        }
+
+        document.getElementById('btnNext').onclick = () => {
+            var nextPage = parseInt(currentNumber.value) + 1;
+            if (nextPage <= maxPage) {
+                currentNumber.value = nextPage;
+                changePage(nextPage);
+                session.signal({
+                    data: nextPage,
+                    to: [],
+                    type: 'next slide'
+                });
+            }
+        }
+
+        document.getElementById('btnPre').onclick = () => {
+            var prePage = parseInt(currentNumber.value) - 1;
+            if (prePage > 0) {
+                currentNumber.value = prePage;
+                changePage(prePage);
+                session.signal({
+                    data: prePage,
+                    to: [],
+                    type: 'previous slide'
+                });
             }
         }
     </script>
