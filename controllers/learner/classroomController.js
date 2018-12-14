@@ -9,6 +9,7 @@ exports.getCourses = (req, res) => {
         var username = '';
         if(typeof req.user.info.lastname != 'undefined'){username += req.user.info.lastname;}
         if(typeof req.user.info.firstname != 'undefined'){username += ' ' + req.user.info.firstname;}
+
         res.render('learner/course-list', {
             courses: req.user.belongCourses,
             username: username,

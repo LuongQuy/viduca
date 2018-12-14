@@ -13,9 +13,12 @@ exports.getClassroom = (req, res, next) => {
             mySession.generateToken()
             .then(token => {
                 mapSessionNamesTokens[room].push(token);
+                var username = '';
+                if(typeof req.user.info.lastname != 'undefined'){username += req.user.info.lastname;}
+                if(typeof req.user.info.firstname != 'undefined'){username += ' ' + req.user.info.firstname;}
                 res.render('learner/classroom', {
                     token: token,
-                    username: req.user.info.lastname + ' ' + req.user.info.firstname,
+                    username: username,
                     email: req.user.local.email
                 });
             })
@@ -32,10 +35,13 @@ exports.getClassroom = (req, res, next) => {
             session.generateToken()
             .then(token => {
                 mapSessionNamesTokens[room].push(token);
+                var username = '';
+                if(typeof req.user.info.lastname != 'undefined'){username += req.user.info.lastname;}
+                if(typeof req.user.info.firstname != 'undefined'){username += ' ' + req.user.info.firstname;}
                 if(req.user.role === 'TEACHER'){
                     res.render('teacher/classroom', {
                         token: token,
-                        username: req.user.info.lastname + ' ' + req.user.info.firstname,
+                        username: username,
                         email: req.user.local.email
                     });
                 }
