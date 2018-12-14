@@ -1,6 +1,8 @@
 const courses = require('../../models/course');
 const users = require('../../models/user');
 const openviduController = require('../openviduController');
+// const OpenVidu = require('openvidu-node-client').OpenVidu;
+// const OV = new OpenVidu('https://45.77.242.35:4443', 'MY_SECRET');
 
 exports.getCourses = (req, res) => {
     if(req.user.role === 'LEARNER'){
@@ -17,4 +19,16 @@ exports.getCourses = (req, res) => {
         res.redirect('/teacher/courses');
 }
 
+// exports.getClassroom = (req, res) => {
+//     var courseId = req.query.courseID;
+//     // res.send(courseId);
+//     courses.findOne({_id: courseId}, 'session', (err, course) => {
+//         // var session = JSON.parse(course.session);
+//         var session = OV.resetSessionWithJson(course.session);
+//         session.generateToken()
+//         .then(token => {
+//             res.send(token);
+//         }).catch(err => console.log(err));
+//     });
+// }
 exports.getClassroom = openviduController.getClassroom;

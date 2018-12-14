@@ -127,7 +127,7 @@
         });
 
         session.on('signal:chat', (event) => {
-            var data = event.data.split(/!/);
+            var data = event.data.split(/!8q1&0@n9/);
             chatContent.innerHTML += `<li class="left clearfix">
                                         <span class="chat-img pull-left">
                                             <img src="./../images/avatar.png" alt="User Avatar" class="img-circle" />
@@ -177,7 +177,7 @@
             } else {
                 user = email.value;
             }
-            var messageData = user + '!' + txtMessage.value;
+            var messageData = user + '!8q1&0@n9' + txtMessage.value;
             session.signal({
                 data: messageData,
                 to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
@@ -199,7 +199,7 @@
                 } else {
                     user = email.value;
                 }
-                var messageData = user + '!' + txtMessage.value;
+                var messageData = user + '!8q1&0@n9' + txtMessage.value;
                 session.signal({
                     data: messageData,
                     to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
@@ -233,11 +233,6 @@
             var number = parseInt(currentNumber.value);
             if (number > 0 && number <= maxPage) {
                 changePage(parseInt(currentNumber.value));
-                session.signal({
-                    data: number,
-                    to: [],
-                    type: 'change page slide'
-                });
             }
         };
         function changePage(pageNumber) {
@@ -262,11 +257,6 @@
             if (nextPage <= maxPage) {
                 currentNumber.value = nextPage;
                 changePage(nextPage);
-                session.signal({
-                    data: nextPage,
-                    to: [],
-                    type: 'next slide'
-                });
             }
         }
 
@@ -275,11 +265,6 @@
             if (prePage > 0) {
                 currentNumber.value = prePage;
                 changePage(prePage);
-                session.signal({
-                    data: prePage,
-                    to: [],
-                    type: 'previous slide'
-                });
             }
         }
     </script>

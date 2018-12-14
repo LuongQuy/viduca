@@ -9,7 +9,8 @@ var courseSchema = new Schema({
     instructorName: String,
     image: String,
     documents: [{name: String, url: String}],
-    learner: []
+    learner: [],
+    session: Schema.Types.Mixed
 }, {
     timestamps: true
 });

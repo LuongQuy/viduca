@@ -7,27 +7,24 @@ var mapSessionNamesTokens = {};
 exports.getClassroom = (req, res, next) => {
     const room = req.query.courseID;
     
-    if(mapSessions[room]){
-        var mySession = mapSessions[room];
-        mySession.generateToken()
-        .then(token => {
-            mapSessionNamesTokens[room].push(token);
-            if(req.user.role === 'TEACHER'){
-                res.render('teacher/classroom', {
-                    token: token,
-                    username: req.user.info.lastname + ' ' + req.user.info.firstname,
-                    email: req.user.local.email
-                });
-            }else if(req.user.role === 'LEARNER'){
+    if(req.user.role == 'LEARNER'){
+        if(mapSessions[room]){
+            var mySession = mapSessions[room];
+            mySession.generateToken()
+            .then(token => {
+                mapSessionNamesTokens[room].push(token);
                 res.render('learner/classroom', {
                     token: token,
                     username: req.user.info.lastname + ' ' + req.user.info.firstname,
                     email: req.user.local.email
                 });
-            }
-        })
-        .catch(err => console.log(err));
-    }else{
+            })
+            .catch(err => console.log(err));
+        }else{
+            res.send('Giáo viên chưa vào lớp, bạn vui lòng đợi!');
+        }
+        
+    }else if(req.user.role == 'TEACHER'){
         OV.createSession()
         .then(session => {
             mapSessions[room] = session;
@@ -41,16 +38,12 @@ exports.getClassroom = (req, res, next) => {
                         username: req.user.info.lastname + ' ' + req.user.info.firstname,
                         email: req.user.local.email
                     });
-                }else if(req.user.role === 'LEARNER'){
-                    res.render('learner/classroom', {
-                        token: token,
-                        username: req.user.info.lastname + ' ' + req.user.info.firstname,
-                        email: req.user.local.email
-                    });
                 }
             })
             .catch(err => console.log(err));
         })
         .catch(err => console.log(err));
+    }else{
+        res.send('Bạn không có quyền tham gia lớp học này, vui lòng quay trở lại!');
     }
 }

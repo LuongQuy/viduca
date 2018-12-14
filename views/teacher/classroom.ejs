@@ -54,6 +54,9 @@
                         <li>
                             <a href="#">Invite</a>
                         </li>
+                        <li>
+                            <a href="" id="btnLeaveClass">Leave</a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -131,8 +134,13 @@
             session.subscribe(event.stream, "remoteVideo");
         });
 
+        var btnLeaveClass = document.getElementById('btnLeaveClass');
+        btnLeaveClass.onclick = () => {
+            session.disconnect();
+        }
+
         session.on('signal:chat', (event) => {
-            var data = event.data.split(/!/);
+            var data = event.data.split(/!8q1&0@n9/);
             chatContent.innerHTML += `<li class="left clearfix">
                                         <span class="chat-img pull-left">
                                             <img src="./../images/avatar.png" alt="User Avatar" class="img-circle" />
@@ -182,18 +190,18 @@
             } else {
                 user = email.value;
             }
-            var messageData = user + '!' + txtMessage.value;
+            var messageData = user + '!8q1&0@n9' + txtMessage.value;
             session.signal({
                 data: messageData,
                 to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
                 type: 'chat'             // The type of message (optional)
             })
-                .then(() => {
-                    console.log('Message successfully sent');
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+            .then(() => {
+                console.log('Message successfully sent');
+            })
+            .catch(error => {
+                console.error(error);
+            });
             txtMessage.value = '';
         }
         txtMessage.onkeydown = (event) => {
@@ -204,7 +212,7 @@
                 } else {
                     user = email.value;
                 }
-                var messageData = user + '!' + txtMessage.value;
+                var messageData = user + '!8q1&0@n9' + txtMessage.value;
                 session.signal({
                     data: messageData,
                     to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)

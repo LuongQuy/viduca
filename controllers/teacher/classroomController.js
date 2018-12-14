@@ -1,6 +1,8 @@
 const courses = require('../../models/course');
 const users = require('../../models/user');
 const openviduController = require('../openviduController');
+// const OpenVidu = require('openvidu-node-client').OpenVidu;
+// const OV = new OpenVidu('https://45.77.242.35:4443', 'MY_SECRET');
 
 exports.getCourses = (req, res) => {
     courses.find({ instructorId: req.user._id }, (err, courseList) => {
@@ -21,6 +23,26 @@ exports.createNewCourse = (req, res) => {
     course.save();
     res.redirect('/teacher/courses');
 }
+
+// exports.getClassroom = (req, res) => {
+//     var courseId = req.query.courseID;
+//     OV.createSession()
+//     .then(session => {
+//         courses.findOneAndUpdate({_id: courseId}, {
+//             session: session
+//         }, (err, course) => {
+//             session.generateToken()
+//             .then(token => {
+//                 res.render('teacher/classroom', {
+//                     token: token,
+//                     username: req.user.info.lastname + ' ' + req.user.info.firstname,
+//                     email: req.user.local.email
+//                 });
+//             })
+//             .catch(err => console.log(err));
+//         });
+//     })
+// }
 
 exports.getClassroom = openviduController.getClassroom;
 
