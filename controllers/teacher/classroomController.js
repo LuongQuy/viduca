@@ -20,8 +20,9 @@ exports.createNewCourse = (req, res) => {
     course.description = req.body.description;
     course.instructorId = req.user._id;
     course.instructorName = req.user.info.lastname + ' ' + req.user.info.firstname;
-    course.save();
-    res.redirect('/teacher/courses');
+    course.save((err, course) => {
+        res.redirect('/teacher/courses');
+    });
 }
 
 // exports.getClassroom = (req, res) => {
@@ -53,7 +54,7 @@ exports.getCoursesManagementPage = (req, res) => {
     courses.findOne({ _id: req.query.courseID }, '_id name description', (err, course) => {
         if (err) console.log(err);
         else res.render('teacher/course-management-page', { course: course, username: username, email: req.user.local.email });
-    })
+    });
 }
 
 exports.getImportLearnerPage = (req, res) => {
@@ -73,6 +74,7 @@ const formidable = require('formidable');
 var stream;
 
 exports.postImportLearner = (req, res) => {
+    var courseID = req.query.courseID;
     var newpath = '';
     var form = new formidable.IncomingForm();
     form.uploadDir = __dirname + '../../../public/files/';
@@ -82,52 +84,53 @@ exports.postImportLearner = (req, res) => {
         fs.rename(oldpath, newpath, function (err) {
             if (err) throw err;
             stream = fs.createReadStream(newpath);
-            var username = [];
-            course = courses.findOne({ _id: req.query.courseID }, 'learner', (err, course) => {
-                username = username.concat(course.learner);
+
+            var learnerID = [];
+            courses.findOne({ _id: courseID }, 'learner', (err, course) => {
+                learnerID = learnerID.concat(course.learner);
             });
+
+            var learnerEmail = [];
             var csvStream = csv().on("data", data => {
-                if (!username.includes(data[0]) && data[0] != '')
-                    username.push(data[0]);
+                if (data[0] != '')
+                    learnerEmail.push(data[0]);
             }).on("end", () => {
-                courses.findOneAndUpdate({ _id: req.query.courseID, instructorId: req.user._id }, {
-                    learner: username
-                }, (err, course) => {
-                    username.forEach(email => {
-                        if (email != '') {
-                            users.findOne({ local: { email: email } }, '_id belongCourses', (err, user) => {
-                                if (user == null) {
-                                    let belongCourses = [];
-                                    let courseObj = {
-                                        courseId: req.query.courseID,
-                                        courseName: course.name,
-                                        courseDescription: course.description,
-                                        instructorId: course.instructorId,
-                                        instructorName: course.instructorName
-                                    }
-                                    belongCourses.push(courseObj);
-                                    newUser = new users();
-                                    newUser.local.email = email;
-                                    newUser.belongCourses = belongCourses;
-                                    newUser.save();
-                                } else {
-                                    let belongCourses = [];
-                                    belongCourses = user.belongCourses;
-                                    let courseObj = {
-                                        courseId: req.query.courseID,
-                                        courseName: course.name,
-                                        courseDescription: course.description,
-                                        instructorId: course.instructorId,
-                                        instructorName: course.instructorName
-                                    }
-                                    belongCourses.push(courseObj);
-                                    users.findOneAndUpdate({ _id: user._id }, {
-                                        belongCourses: belongCourses
+                learnerEmail.forEach(email => {
+                    if (email != '') {
+                        users.findOne({ 'local.email': email }, '_id belongCourses', (err, user) => {
+                            if (user) {
+                                var belongCourses = [];
+                                belongCourses = belongCourses.concat(user.belongCourses);
+                                var checkExistCourse = belongCourses.some(() => {
+                                    if(belongCourses == courseID) return true;
+                                    else return false;
+                                });
+                                if (! checkExistCourse) {
+                                    courses.findByIdAndUpdate(courseID, { $push: {learner: user._id} }, (err, course) => {
+                                        if(err) console.log(err);
+                                    });
+                                    users.findByIdAndUpdate(user._id , { $push: { belongCourses: courseID }}, (err, user) => {
+                                        if(err) console.log(err);
                                     });
                                 }
-                            });
-                        }
-                    });
+                            } else {
+                                var newUser = new users({
+                                    local: {
+                                        email: email
+                                    },
+                                    belongCourses: [courseID],
+                                    role: 'LEARNER',
+                                    status: 'INACTIVE'
+                                });
+                                newUser.save((err, user) => {
+                                    console.log('User 2: ' + user);
+                                    courses.findByIdAndUpdate(courseID, { $push: {learner: user._id} }, (err, course) => {
+                                        if(err) console.log(err);
+                                    });
+                                });
+                            }
+                        });
+                    }
                 });
             })
             stream.pipe(csvStream);
@@ -135,4 +138,80 @@ exports.postImportLearner = (req, res) => {
     });
 
     res.redirect('/teacher/import-learner?courseID=' + req.query.courseID);
+}
+
+exports.getAddLearner = (req, res) => {
+    var username = '';
+    if (typeof req.user.info.lastname != 'undefined') { username += req.user.info.lastname; }
+    if (typeof req.user.info.firstname != 'undefined') { username += ' ' + req.user.info.firstname }
+    courses.findOne({ _id: req.query.courseID })
+        .populate('learner').exec((err, course) => {
+            var username = '';
+            if (typeof req.user.info.lastname != 'undefined') { username += req.user.info.lastname; }
+            if (typeof req.user.info.firstname != 'undefined') { username += ' ' + req.user.info.firstname }
+            res.render('teacher/add-learner', {
+                learners: course.learner,
+                username: username,
+                email: req.user.local.email,
+                course: course
+            });
+        });
+}
+
+exports.postAddLearner = (req, res) => {
+    var email = req.body.email;
+    var courseID = req.query.courseID;
+    users.findOne({'local.email': email}, '_id belongCourses', (err, user) => {
+        if(user){
+            var belongCourses = JSON.stringify(user.belongCourses);
+            console.log('belongCourse 1: ' + belongCourses);
+            console.log('2 :' + belongCourses);
+            if (! belongCourses.includes(courseID)) {
+                courses.findByIdAndUpdate(courseID, { $push: {learner: user._id} }, (err, course) => {
+                    if(err) console.log(err);
+                });
+                users.findByIdAndUpdate(user._id , { $push: { belongCourses: courseID }}, (err, user) => {
+                    if(err) console.log(err);
+                });
+            }
+            res.redirect('/teacher/add-learner?courseID=' + courseID);
+        }else{
+            var newUser = new users({
+                local: {
+                    email: email
+                },
+                belongCourses: [courseID],
+                role: 'LEARNER',
+                status: 'INACTIVE'
+            });
+            newUser.save((err, user) => {
+                courses.findByIdAndUpdate(courseID, {$push: {learner: user._id}}, (err, course) => {
+                    if(err) console.log(err);
+                })
+            });
+            res.redirect('/teacher/add-learner?courseID=' + courseID);
+        }
+    });
+}
+
+exports.postDeleteLearner = (req, res) => {
+    var courseID = req.query.courseID;
+    var learnerDelID = req.query.learnerDelID;
+    console.log('learner id: '+learnerDelID);
+    courses.findById(courseID, '_id instructorId learner', (err, course) => {
+        if(course){
+            var instructorID = JSON.stringify(course.instructorId);
+            var currentUserID = JSON.stringify(req.user._id);
+            console.log('typeof instructorid 1: ' + typeof instructorID);
+            console.log('typeof instructorid 2: ' + typeof currentUserID);
+            if(instructorID === currentUserID){
+                console.log(course);
+                courses.findByIdAndUpdate(courseID, {$pull: {learner: learnerDelID}}, (err, course) => {
+                    if(err) console.log(err);
+                    else console.log(course);
+                    res.redirect('/teacher/add-learner?courseID=' + courseID);  
+                })
+            }  
+        }
+    });
 }

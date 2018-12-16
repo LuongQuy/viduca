@@ -16,4 +16,10 @@ router.get('/import-learner', authController.isLogged, classroomController.getIm
 
 router.post('/import-learner', authController.isLogged, classroomController.postImportLearner);
 
+router.get('/add-learner', authController.isLogged, classroomController.getAddLearner);
+
+router.post('/add-learner', authController.isLogged, classroomController.postAddLearner);
+
+router.post('/delete-learner', authController.isLogged, classroomController.postDeleteLearner);
+
 module.exports = router;

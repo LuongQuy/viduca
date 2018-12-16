@@ -18,24 +18,34 @@ passport.use('local.signup', new localStrategy({
     passReqToCallback: true
 }, (req, email, password, done) => {
     users.findOne({'local.email': email}, (err, user) => {
-        // if(user) {
-        //     return done(null, false);
-        // }
-        if(user && typeof user.local.password == 'undefined'){
-            users.findOneAndUpdate({'local.email': email}, 
-            {
+        if(user) {
+            if(typeof user.local.password != 'undefined') return done(null, false);
+            else{
+                users.findOneAndUpdate({'local.email': email}, 
+                {
+                    local: {
+                        email: email,
+                        password: password
+                    },
+                    role: 'LEARNER',
+                    status: 'ACTIVE'
+                }, (err, newUser) => {
+                    if(err) return done(err);
+                    else return done(null, newUser);
+                });
+            }
+        }else{
+            let newUser = new users({
                 local: {
                     email: email,
                     password: password
                 },
                 role: 'LEARNER',
                 status: 'ACTIVE'
-            }, (err, newUser) => {
-                if(err) return done(err);
-                else return done(null, newUser);
             });
-        }else{
-            return done(null, false);
+            newUser.save((err, newUser) => {
+                return done(null, newUser);
+            });
         }
     });
 }));

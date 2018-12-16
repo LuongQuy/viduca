@@ -21,10 +21,10 @@ var userSchema = new Schema({
         resetPasswordToken: String,
         resetPasswordExpires: Date
     },
-    courses: [],
+    courses: [{type: Schema.Types.ObjectId, ref: 'Course'}],
     role: String, // ADMIN, TEACHER, LEARNER
     status: String, // ACTIVE, INACTIVE, SUSPENDED.
-    belongCourses: [{courseId: String, courseName: String, instructorId: String, courseDescription: String, instructorName: String }]
+    belongCourses: [{type: Schema.Types.ObjectId, ref: 'Course'}]
 }, {
     timestamps: true
 });
