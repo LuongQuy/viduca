@@ -9,11 +9,14 @@ exports.getCourses = (req, res) => {
         var username = '';
         if(typeof req.user.info.lastname != 'undefined'){username += req.user.info.lastname;}
         if(typeof req.user.info.firstname != 'undefined'){username += ' ' + req.user.info.firstname;}
-
-        res.render('learner/course-list', {
-            courses: req.user.belongCourses,
-            username: username,
-            email: req.user.local.email
+        users.findById(req.user._id)
+        .populate('belongCourses')
+        .exec((err, user) => {
+            res.render('learner/course-list', {
+                courses: user.belongCourses,
+                username: username,
+                email: req.user.local.email
+            }); 
         });
     }
     else if(req.user.role === 'TEACHER')
