@@ -27,7 +27,7 @@ var fs = require('fs');
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'upload')
+        cb(null, './public/upload/slides/')
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname)
@@ -38,11 +38,11 @@ var upload = multer({ storage: storage }).single("file");
 
 router.post('/upload-slide', function (req, res) {
     upload(req, res, function (err) {
-        var oldPath = './upload/' + req.file.originalname;
+        var oldPath = './public/upload/slides/' + req.file.originalname;
         // if(err) return res.send('Error uploading file: ' + err);
         // else res.send('./public/uploads/slides/' + req.file.originalname);
-        var newPath = './upload/' + Date.now() + '-' + req.file.originalname;
-        var path = 'upload/' + Date.now() + '-' + req.file.originalname;
+        var newPath = './public/upload/slides/' + Date.now() + '-' + req.file.originalname;
+        var path = 'upload/slides/' + Date.now() + '-' + req.file.originalname;
         fs.rename(oldPath, newPath, err => {
             if (err) return res.end("Error uploading file...");
             res.send(path);
