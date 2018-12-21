@@ -340,21 +340,33 @@
             var form_data = new FormData();
             form_data.append('file', file_data);
             $.ajax({
-                url: '/teacher/upload-slide', // gửi đến file upload.php 
+                url: '/teacher/test',
                 dataType: 'text',
                 cache: false,
                 contentType: false,
                 processData: false,
-                data: form_data,
+                data: 'hello',
                 type: 'post',
-                success: function (res) {
+                success: function(res){
                     alert(res);
-                    showSlide(res);
-                    $('#file').val('');
-                    $('#currentPage').val(0);
-                    $('#chooseSlideModal').modal('hide');
                 }
-            });
+            })
+            // $.ajax({
+            //     url: '/teacher/upload-slide', // gửi đến file upload.php 
+            //     dataType: 'text',
+            //     cache: false,
+            //     contentType: false,
+            //     processData: false,
+            //     data: form_data,
+            //     type: 'post',
+            //     success: function (res) {
+            //         alert(res);
+            //         showSlide(res);
+            //         $('#file').val('');
+            //         $('#currentPage').val(0);
+            //         $('#chooseSlideModal').modal('hide');
+            //     }
+            // });
         })
     </script>
 </body>
