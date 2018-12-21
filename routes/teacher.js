@@ -26,15 +26,15 @@ var multer = require('multer');
 var fs = require('fs');
 
 var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './public/upload/slides/')
+    destination: function (req, file, callback) {
+        callback(null, './uploads');
     },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname)
+    filename: function (req, file, callback) {
+        callback(null, file.originalname);
     }
-})
+});
 
-var upload = multer({ storage: storage }).single("file");
+var upload = multer({ storage: storage }).single('myfile');
 
 router.post('/upload-slide', function (req, res) {
     upload(req, res, function (err) {
@@ -50,8 +50,18 @@ router.post('/upload-slide', function (req, res) {
     })
 })
 
-router.get('/upload-slide', function(req, res){
-    res.render('teacher/upload-file');
+router.post('/upload',function(req,res){
+    upload(req,res,function(err){
+        if(err){
+            return res.end('Error uploading file');
+        }
+
+        res.end('File is uploaded successfully');
+    });
+});
+
+router.get('/upload', function(req, res){
+    res.render('teacher/upload');
 })
 
 module.exports = router;

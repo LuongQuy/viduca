@@ -10,7 +10,10 @@
     <!-- Bootstrap CSS -->
     <link href="./../stylesheets/bootstrap3.3.7.min.css" rel="stylesheet">
     <script src="../javascripts/jquery.min.js"></script>
+    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
     <script src="../javascripts/bootstrap-3.3.7.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+
     <!-- custom css -->
     <link rel="stylesheet" href="../stylesheets/style.css">
     <link rel="stylesheet" href="../stylesheets/slide.css">
@@ -129,25 +132,26 @@
                     <h4 class="modal-title pull-left">Chọn slide (định dạng pdf)</h4>
                 </div>
                 <div class="modal-body">
-
-                    <div class="form-group">
-                        <div class="row">
-                            <!-- <label for="coursename" class="col-sm-2 col-form-label">Slide</label> -->
-                            <div class="col-sm-10">
-                                <input type="file" class="form-control" name="file" id="file">
+                    <form id="uploadSlideForm" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <div class="row">
+                                <!-- <label for="coursename" class="col-sm-2 col-form-label">Slide</label> -->
+                                <div class="col-sm-10">
+                                    <input type="file" class="form-control" name="file" id="file">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-10">
-                                <!-- <input type="hidden" name="_csrf" value="{{csrfToken}}"> -->
-                                <button id="btnUploadSlide" type="submit" class="btn btn-info">Submit</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <!-- <input type="hidden" name="_csrf" value="{{csrfToken}}"> -->
+                                    <input type="submit" class="btn btn-info" value="submit" />
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                </div>
                             </div>
+                            <div id="status" class="alert alert-primary" role="alert"></div>
                         </div>
-                    </div>
-
+                    </form>
                 </div>
             </div>
 
@@ -160,7 +164,7 @@
     <script src="../javascripts/openvidu-browser-2.6.0.js"></script>
     <script>
         var chatContent = document.getElementById('chat-content');
-        var token = <%- JSON.stringify(token) %>;
+        var token = <% - JSON.stringify(token) %>;
         // const socket = io ('http://localhost:3000');
         const OV = new OpenVidu();
         session = OV.initSession();
@@ -262,7 +266,7 @@
             }
         }
 
-        
+
 
         // upload slide
         function showSlide(slidePath) {
@@ -334,40 +338,27 @@
                 }
             }
         }
-        $('#btnUploadSlide').on('click', function () {
-            var file_data = $('#file').prop('files')[0];
-            var type = file_data.type;
-            var form_data = new FormData();
-            form_data.append('file', file_data);
-            // $.ajax({
-            //     url: '/teacher/test',
-            //     dataType: 'text',
-            //     cache: false,
-            //     contentType: false,
-            //     processData: false,
-            //     data: 'hello',
-            //     type: 'post',
-            //     success: function(res){
-            //         alert(res);
-            //     }
-            // })
-            $.ajax({
-                url: '/teacher/upload-slide', // gửi đến file upload.php 
-                dataType: 'text',
-                cache: false,
-                contentType: false,
-                processData: false,
-                data: form_data,
-                type: 'post',
-                success: function (res) {
-                    alert(res);
-                    showSlide(res);
-                    $('#file').val('');
-                    $('#currentPage').val(0);
-                    $('#chooseSlideModal').modal('hide');
-                }
+        $(document).ready(function () {
+            $('#uploadForm').submit(function () {
+                $("#status").empty().text("File is uploading...");
+
+                $(this).ajaxSubmit({
+                    url: '/teacher/upload',
+
+                    error: function (xhr) {
+                        status('Error: ' + xhr.status);
+                    },
+
+                    success: function (response) {
+                        console.log(response)
+                        $("#status").empty().text(response);
+                    },
+                    type: 'POST'
+                });
+
+                return false;
             });
-        })
+        });  
     </script>
 </body>
 
