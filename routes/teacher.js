@@ -27,7 +27,7 @@ var fs = require('fs');
 
 var storage = multer.diskStorage({
     destination: function (req, file, callback) {
-        callback(null, './uploads');
+        callback(null, './public/upload/slides/');
     },
     filename: function (req, file, callback) {
         callback(null, file.originalname);

@@ -132,7 +132,7 @@
                     <h4 class="modal-title pull-left">Chọn slide (định dạng pdf)</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="uploadSlideForm" enctype="multipart/form-data">
+                    <form id="uploadSlideForm" enctype="multipart/form-data" method="POST">
                         <div class="form-group">
                             <div class="row">
                                 <!-- <label for="coursename" class="col-sm-2 col-form-label">Slide</label> -->
@@ -164,7 +164,7 @@
     <script src="../javascripts/openvidu-browser-2.6.0.js"></script>
     <script>
         var chatContent = document.getElementById('chat-content');
-        var token = <% - JSON.stringify(token) %>;
+        var token = <%- JSON.stringify(token) %>;
         // const socket = io ('http://localhost:3000');
         const OV = new OpenVidu();
         session = OV.initSession();
@@ -343,7 +343,7 @@
                 $("#status").empty().text("File is uploading...");
 
                 $(this).ajaxSubmit({
-                    url: '/teacher/upload',
+                    url: '/teacher/upload-slide',
 
                     error: function (xhr) {
                         status('Error: ' + xhr.status);
