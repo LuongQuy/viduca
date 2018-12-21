@@ -38,14 +38,15 @@ var upload = multer({ storage: storage }).single("file");
 
 router.post('/upload-slide', function (req, res) {
     upload(req, res, function (err) {
-        var oldPath = './public/uploads/slides/' + req.file.originalname;
-        // res.send('./public/uploads/slides/' + req.file.originalname);
-        var newPath = './public/uploads/slides/' + Date.now() + '-' + req.file.originalname;
-        var path = 'uploads/slides/' + Date.now() + '-' + req.file.originalname;
-        fs.rename(oldPath, newPath, err => {
-            if (err) return res.end("Error uploading file...");
-            res.send(path);
-        });
+        // var oldPath = './public/uploads/slides/' + req.file.originalname;
+        if(err) return res.send('Error uploading file: ' + err);
+        else res.send('./public/uploads/slides/' + req.file.originalname);
+        // var newPath = './public/uploads/slides/' + Date.now() + '-' + req.file.originalname;
+        // var path = 'uploads/slides/' + Date.now() + '-' + req.file.originalname;
+        // fs.rename(oldPath, newPath, err => {
+        //     if (err) return res.end("Error uploading file...");
+        //     res.send(path);
+        // });
     })
 })
 
