@@ -37,6 +37,7 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage }).single("file");
 
 router.post('/upload-slide', function (req, res) {
+    res.send('cho nay chua bi loi!');
     upload(req, res, function (err) {
         // var oldPath = './public/uploads/slides/' + req.file.originalname;
         if(err) return res.send('Error uploading file: ' + err);
