@@ -22,4 +22,30 @@ router.post('/add-learner', authController.isLogged, classroomController.postAdd
 
 router.post('/delete-learner', authController.isLogged, classroomController.postDeleteLearner);
 
+var multer = require('multer');
+var fs = require('fs');
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/uploads/slides/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+})
+
+var upload = multer({ storage: storage }).single("file");
+
+router.post('/upload-slide', function (req, res) {
+    upload(req, res, function (err) {
+        var oldPath = 'public/uploads/slides/' + req.file.originalname;
+        var newPath = 'public/uploads/slides/' + Date.now() + '-' + req.file.originalname;
+        var path = 'uploads/slides/' + Date.now() + '-' + req.file.originalname;
+        fs.rename(oldPath, newPath, err => {
+            if (err) return res.end("Error uploading file...");
+            res.send(path);
+        });
+    })
+})
+
 module.exports = router;

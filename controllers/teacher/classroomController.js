@@ -1,8 +1,28 @@
 const courses = require('../../models/course');
 const users = require('../../models/user');
 const openviduController = require('../openviduController');
-// const OpenVidu = require('openvidu-node-client').OpenVidu;
-// const OV = new OpenVidu('https://45.77.242.35:4443', 'MY_SECRET');
+var multer = require('multer');
+var fs = require('fs');
+var storage = multer.diskStorage({
+    destination: function(req, file, cb){
+        cb(null, 'public/uploads/slides')
+    },
+    filename: function(req, file, cb){
+        cb(null, file.originalname)
+    }
+})
+var upload = multer({storage: storage}).single('inputSlide');
+
+exports.postUploadSlide = (req, res) => {
+    upload(req, res, function(err){
+       var oldpath = 'public/uploads/slides/' + req.file.originalname;
+       var newpath = 'public/uploads/slides' + req.user._id + '-' + Date.now() + '-' + req.file.originalname;
+       fs.rename(oldpath, newpath, err => {
+           if(err) return res.send('Error uploading file: ' + err);
+           res.send('File is uploaded');
+       }) 
+    });
+}
 
 exports.getCourses = (req, res) => {
     courses.find({ instructorId: req.user._id }, (err, courseList) => {
@@ -69,7 +89,6 @@ exports.getImportLearnerPage = (req, res) => {
 }
 
 const csv = require("fast-csv");
-const fs = require('fs');
 const formidable = require('formidable');
 var stream;
 
