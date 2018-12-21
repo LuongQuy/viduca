@@ -11,7 +11,7 @@
             $('#uploadForm').submit(function () {
                 $("#status").empty().text("File is uploading...");
 
-                url: '/teacher/upload',
+                url: 'https://45.77.242.35:3000/teacher/upload',
                 
                 $(this).ajaxSubmit({
 
@@ -34,7 +34,7 @@
 
 <body>
     <h1>Express.js File Upload:</h1>
-    <form id="uploadForm" enctype="multipart/form-data" action="/teacher/upload" method="post">
+    <form id="uploadForm" enctype="multipart/form-data" action="https://45.77.242.35:3000/teacher/upload" method="post">
         <input type="file" name="file" />
         <br />
         <br />
