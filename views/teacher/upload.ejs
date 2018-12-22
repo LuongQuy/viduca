@@ -1,48 +1,42 @@
-<html>
+<script src="../javascripts/jquery.min.js"></script>
+<script src="../javascripts/jquery.form.min.js"></script>
+<div id="addSlideModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="form-group">
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left">Chọn slide (định dạng pdf)</h4>
+                </div>
+                <div class="modal-body">
+                    <input id="file" class="form-control" type="file" name="file" />
+                    <br>
+                    <br>
+                    <br>
+                    <input id="btnUpload" class="btn btn-info" type="submit" value="submit" />
+                </div>
+            </div>
+        </div>
 
-<head>
-    <title>File upload in Node.js</title>
-    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
-    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-        crossorigin="anonymous"></script>
-    <script src="../javascripts/jquery.form.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#uploadForm').submit(function () {
-                $("#status").empty().text("File is uploading...");
-
-                url: 'https://45.77.242.35:3000/teacher/upload',
-                
-                $(this).ajaxSubmit({
-
-                    error: function (xhr) {
-                        status('Error: ' + xhr.status);
-                    },
-
-                    success: function (response) {
-                        console.log(response)
-                        $("#status").empty().text(response);
-                    },
-                    type: 'POST'
-                });
-
-                return false;
-            });
-        });  
-    </script>
-</head>
-
-<body>
-    <h1>Express.js File Upload:</h1>
-    <form id="uploadForm" enctype="multipart/form-data" action="https://45.77.242.35:3000/teacher/upload" method="post">
-        <input type="file" name="file" />
-        <br />
-        <br />
-        <input type="submit" value="Upload Image" name="submit">
-        <br />
-        <br />
-        <span id="status"></span>
-    </form>
-</body>
-
-</html>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#btnUpload').on('click', function () {
+            var fileData = $('#file').prop('files')[0];
+            console.trace(fileData);
+            var formData = new FormData();
+            formData.append('file', fileData, fileData.name);
+            $.ajax({
+                url: '/upload-slide',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(res){
+                    alert(res);
+                }
+            })
+            return false;
+        });
+    });  
+</script>

@@ -44,6 +44,10 @@ app.use('/teacher', teacherRouter);
 app.use('/user', userRouter);
 
 // upload slide
+app.get('/upload-slide', (req, res) => {
+  res.render('teacher/upload');
+})
+
 var Courses = require('./models/course');
 var formidable = require('formidable');
 app.post('/upload-slide', function (req, res, next) { 
@@ -57,7 +61,7 @@ app.post('/upload-slide', function (req, res, next) {
       if(err) throw err;
       Courses.update({_id: courseID}, {$push: {documents: 'aaa'}}, (err, course) => {
         if(err) throw err;
-        console.log(course);
+        // console.log(course);
       })
       res.end(path.join('uploads/slides/', file.name));
     });

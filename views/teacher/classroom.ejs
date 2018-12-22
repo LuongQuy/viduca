@@ -40,7 +40,7 @@
                 var formData = new FormData();
                 formData.append('file', fileData, fileData.name);
                 $.ajax({
-                    url: 'https://45.77.242.35:3000/upload-slide',
+                    url: '/upload-slide',
                     type: 'POST',
                     data: formData,
                     processData: false,
