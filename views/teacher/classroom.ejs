@@ -28,9 +28,9 @@
     <script src="../javascripts/pdf.js"></script>
     <script src="../javascripts/openvidu-browser-2.6.0.js"></script>
 
-    <%- include('./layouts-teacher/classroom/script-openvidu.ejs') %>
-
     <%- include('./layouts-teacher/classroom/script-slide.ejs') %>
+
+    <%- include('./layouts-teacher/classroom/script-openvidu.ejs') %>
 
     <script>
         $(document).ready(function () {
@@ -40,7 +40,7 @@
                 var formData = new FormData();
                 formData.append('file', fileData, fileData.name);
                 $.ajax({
-                    url: '/upload-slide?courseID=<%="5c1dfcafee3c4d212ca54242"%>',
+                    url: 'https://45.77.242.35:3000/upload-slide',
                     type: 'POST',
                     data: formData,
                     processData: false,

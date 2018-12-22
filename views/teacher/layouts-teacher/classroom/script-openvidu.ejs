@@ -31,20 +31,20 @@
                                     </li>`;
     });
 
-    session.on('signal:change page slide', event => {
-        changePage(parseInt(event.data));
-        currentNumber.value = parseInt(event.data);
-    });
+    // session.on('signal:change page slide', event => {
+    //     changePage(parseInt(event.data));
+    //     currentNumber.value = parseInt(event.data);
+    // });
 
-    session.on('signal:next slide', event => {
-        changePage(parseInt(event.data));
-        currentNumber.value = parseInt(event.data);
-    });
+    // session.on('signal:next slide', event => {
+    //     changePage(parseInt(event.data));
+    //     currentNumber.value = parseInt(event.data);
+    // });
 
-    session.on('signal:previous slide', event => {
-        changePage(parseInt(event.data));
-        currentNumber.value = parseInt(event.data);
-    });
+    // session.on('signal:previous slide', event => {
+    //     changePage(parseInt(event.data));
+    //     currentNumber.value = parseInt(event.data);
+    // });
 
     session.connect(token)
         .then(() => {
