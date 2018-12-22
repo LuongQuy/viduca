@@ -1,91 +1,14 @@
 <!DOCTYPE html>
 <html lang="">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>slide presentation demo</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="./../stylesheets/bootstrap3.3.7.min.css" rel="stylesheet">
-    <script src="../javascripts/jquery.min.js"></script>
-    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
-    <script src="../javascripts/bootstrap-3.3.7.min.js"></script>
-    <script src="../javascripts/jquery.form.min.js"></script>
-
-    <!-- custom css -->
-    <link rel="stylesheet" href="../stylesheets/style.css">
-    <link rel="stylesheet" href="../stylesheets/slide.css">
-    <link rel="stylesheet" href="../stylesheets/video.css">
-    <link rel="stylesheet" href="../stylesheets/chat.css">
-</head>
+<%- include('./layouts-teacher/classroom/classroom-header-tag.ejs') %>
 
 <body>
     <div class="container-fluid">
-        <div class="row">
-            <nav class="navbar navbar-default nav-classroom" role="navigation">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/">
-                        <img src="../images/logo-light.png" alt="">
-                    </a>
-                </div>
-                <div class="collapse navbar-collapse navbar-ex1-collapse" style="margin-left: 90px">
-                    <ul class="nav navbar-nav ul-nav-classroom">
-                        <li>
-                            <a href="" data-toggle="modal" data-target="#chooseSlideModal">Slide</a>
-                        </li>
-                        <li>
-                            <a href="#">Tools</a>
-                        </li>
-                        <li>
-                            <a href="#">Chat</a>
-                        </li>
-                        <li>
-                            <a href="#">Playlist</a>
-                        </li>
-                        <li>
-                            <a href="#">Participants</a>
-                        </li>
-                        <li>
-                            <a href="#">Notes</a>
-                        </li>
-                        <li>
-                            <a href="#">Invite</a>
-                        </li>
-                        <li>
-                            <a href="" id="btnLeaveClass">Leave</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
+        <%- include('./layouts-teacher/classroom/classroom-header.ejs') %>
         <div class="row" style="height: 92vh">
             <div class="col-md-9" style="height: 100%">
                 <div class="row" style="height:80%">
-                    <div id="slideContainer">
-                        <div id="slide">
-                            <canvas id="the-canvas"></canvas>
-                        </div>
-                        <div id="controlSlide">
-                            <div id="toolbar">
-                                <button id="btnPre">
-                                    <b>
-                                        << </b> </button> <input type="number" id="currentNumber" value="1">
-                                            <span class="white">/</span>
-                                            <span id="maxNumber" class="white"></span>
-                                            <button id="btnNext">
-                                                <b> >> </b>
-                                            </button>
-                            </div>
-                        </div>
-                    </div>
+                    <%- include('./layouts-teacher/classroom/div-show-slide.ejs') %>
                 </div>
                 <div class="row" id="videoContainer" style="height: 20%;">
                     <div class="video" id="localVideo"></div>
@@ -94,268 +17,40 @@
             </div>
             <div class="col-md-3 border-left" style="height: 100%">
                 <div class="row">
-                    <div id="chat-panel" class="panel panel-default">
-                        <div class="panel panel-primary" style="border-radius: 0px;">
-                            <div class="panel-heading" style="border-radius: 0px">
-                                <span class="glyphicon glyphicon-comment"></span> Chat
-                            </div>
-                            <div class="panel-body">
-                                <ul class="chat" id="chat-content">
-
-                                </ul>
-                            </div>
-                            <div class="panel-footer">
-                                <div class="input-group">
-                                    <input id="txtMessage" type="text" class="form-control input-sm" placeholder="Type your message here..." />
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-warning btn-sm" id="btn-chat">
-                                            Send</button>
-                                        <input type="hidden" id="username" value="<%= username %>">
-                                        <input type="hidden" id="email" value="<%= email %>">
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.panel .chat-panel -->
+                    <%- include('./layouts-teacher/classroom/div-chat.ejs') %>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
-    <div id="chooseSlideModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title pull-left">Chọn slide (định dạng pdf)</h4>
-                </div>
-                <div class="modal-body">
-                    <form id="uploadSlideForm" enctype="multipart/form-data" method="POST">
-                        <div class="form-group">
-                            <div class="row">
-                                <!-- <label for="coursename" class="col-sm-2 col-form-label">Slide</label> -->
-                                <div class="col-sm-10">
-                                    <input type="file" class="form-control" name="file" id="file">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-10">
-                                    <!-- <input type="hidden" name="_csrf" value="{{csrfToken}}"> -->
-                                    <input type="submit" class="btn btn-info" value="submit" />
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                </div>
-                            </div>
-                            <div id="status" class="alert alert-primary" role="alert"></div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-        </div>
-    </div>
+    <%- include('./layouts-teacher/classroom/add-slide-modal.ejs') %>
 
     <script src="../javascripts/pdf.js"></script>
-    <!-- <script src="../javascripts/slide.js"></script> -->
-    <!-- <script src="../javascripts/socket.io.js"></script> -->
     <script src="../javascripts/openvidu-browser-2.6.0.js"></script>
+
+    <%- include('./layouts-teacher/classroom/script-openvidu.ejs') %>
+
+    <%- include('./layouts-teacher/classroom/script-slide.ejs') %>
+
     <script>
-        var chatContent = document.getElementById('chat-content');
-        var token = <%- JSON.stringify(token) %>;
-        // const socket = io ('http://localhost:3000');
-        const OV = new OpenVidu();
-        session = OV.initSession();
-        session.on('streamCreated', (event) => {
-            session.subscribe(event.stream, "remoteVideo");
-        });
-
-        var btnLeaveClass = document.getElementById('btnLeaveClass');
-        btnLeaveClass.onclick = () => {
-            session.disconnect();
-        }
-
-        session.on('signal:chat', (event) => {
-            var data = event.data.split(/!8q1&0@n9/);
-            chatContent.innerHTML += `<li class="left clearfix">
-                                        <span class="chat-img pull-left">
-                                            <img src="./../images/avatar.png" alt="User Avatar" class="img-circle" />
-                                        </span>
-                                        <div class="chat-body clearfix">
-                                            <div class="header">
-                                                <strong class="primary-font">${data[0]}</strong>
-                                                <small class="pull-right text-muted">
-                                            </div>
-                                            <p>
-                                              ${data[1]}  
-                                            </p>
-                                        </div>
-                                    </li>`;
-        });
-
-        session.on('signal:change page slide', event => {
-            changePage(parseInt(event.data));
-            currentNumber.value = parseInt(event.data);
-        });
-
-        session.on('signal:next slide', event => {
-            changePage(parseInt(event.data));
-            currentNumber.value = parseInt(event.data);
-        });
-
-        session.on('signal:previous slide', event => {
-            changePage(parseInt(event.data));
-            currentNumber.value = parseInt(event.data);
-        });
-
-        session.connect(token)
-            .then(() => {
-                var publisher = OV.initPublisher('localVideo');
-                session.publish(publisher);
-            })
-            .catch(err => console.log(err));
-
-        var btnChat = document.getElementById('btn-chat');
-        var txtMessage = document.getElementById('txtMessage');
-        const username = document.getElementById('username');
-        const email = document.getElementById('email');
-        btnChat.onclick = () => {
-            var user = '';
-            if (username.value != '') {
-                user = username.value;
-            } else {
-                user = email.value;
-            }
-            var messageData = user + '!8q1&0@n9' + txtMessage.value;
-            session.signal({
-                data: messageData,
-                to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
-                type: 'chat'             // The type of message (optional)
-            })
-                .then(() => {
-                    console.log('Message successfully sent');
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-            txtMessage.value = '';
-        }
-        txtMessage.onkeydown = (event) => {
-            if (event.keyCode == 13) {
-                var user = '';
-                if (username.value != '') {
-                    user = username.value;
-                } else {
-                    user = email.value;
-                }
-                var messageData = user + '!8q1&0@n9' + txtMessage.value;
-                session.signal({
-                    data: messageData,
-                    to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
-                    type: 'chat'             // The type of message (optional)
-                })
-                    .then(() => {
-                        console.log('Message successfully sent');
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-                txtMessage.value = '';
-            }
-        }
-
-
-
-        // upload slide
-        function showSlide(slidePath) {
-            // For slide present
-            var url = '../' + slidePath;
-            var currentNumber = document.getElementById('currentNumber');
-            var canvas = document.getElementById('the-canvas');
-            var context = canvas.getContext('2d');
-
-            var currentPage = document.getElementById('currentPage');
-            var obj = PDFJS.getDocument(url);
-            var maxPage;
-            obj.then(pdf => {
-                maxPage = pdf.pdfInfo.numPages;
-                document.getElementById('maxNumber').innerHTML = maxPage;
-            });
-            changePage(parseInt(currentNumber.value));
-            currentNumber.oninput = () => {
-                var number = parseInt(currentNumber.value);
-                if (number > 0 && number <= maxPage) {
-                    changePage(parseInt(currentNumber.value));
-                    session.signal({
-                        data: number,
-                        to: [],
-                        type: 'change page slide'
-                    });
-                }
-            };
-            function changePage(pageNumber) {
-                obj.then(function (pdf) {
-                    return pdf.getPage(pageNumber);
-                })
-                    .then(function (page) {
-                        var scale = 1;
-                        var viewport = page.getViewport(scale);
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        var renderContext = {
-                            canvasContext: context,
-                            viewport: viewport
-                        };
-                        page.render(renderContext);
-                    });
-            }
-
-            document.getElementById('btnNext').onclick = () => {
-                var nextPage = parseInt(currentNumber.value) + 1;
-                if (nextPage <= maxPage) {
-                    currentNumber.value = nextPage;
-                    changePage(nextPage);
-                    session.signal({
-                        data: nextPage,
-                        to: [],
-                        type: 'next slide'
-                    });
-                }
-            }
-
-            document.getElementById('btnPre').onclick = () => {
-                var prePage = parseInt(currentNumber.value) - 1;
-                if (prePage > 0) {
-                    currentNumber.value = prePage;
-                    changePage(prePage);
-                    session.signal({
-                        data: prePage,
-                        to: [],
-                        type: 'previous slide'
-                    });
-                }
-            }
-        }
         $(document).ready(function () {
-            $('#uploadForm').submit(function () {
-                $("#status").empty().text("File is uploading...");
-
-                $(this).ajaxSubmit({
-                    url: '/teacher/upload-slide',
-
-                    error: function (xhr) {
-                        status('Error: ' + xhr.status);
-                    },
-
-                    success: function (response) {
-                        console.log(response)
-                        $("#status").empty().text(response);
-                    },
-                    type: 'POST'
-                });
-
+            $('#btnUpload').on('click', function () {
+                var fileData = $('#file').prop('files')[0];
+                console.trace(fileData);
+                var formData = new FormData();
+                formData.append('file', fileData, fileData.name);
+                $.ajax({
+                    url: '/upload-slide?courseID=<%="5c1dfcafee3c4d212ca54242"%>',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res){
+                        showSlide(res);
+                        $('#addSlideModal').modal('hide');
+                        $('#file').val('');
+                    }
+                })
                 return false;
             });
         });  

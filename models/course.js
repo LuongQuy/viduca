@@ -8,7 +8,7 @@ var courseSchema = new Schema({
     instructorId: {type: Schema.Types.ObjectId, ref: 'Member'},
     instructorName: String,
     image: String,
-    documents: [{name: String, url: String}],
+    documents: Array,
     learner: [{type: Schema.Types.ObjectId, ref: 'Member'}],
     session: Schema.Types.Mixed
 }, {

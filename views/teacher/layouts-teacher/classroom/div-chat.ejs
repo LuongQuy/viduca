@@ -1,0 +1,24 @@
+<div id="chat-panel" class="panel panel-default">
+    <div class="panel panel-primary" style="border-radius: 0px;">
+        <div class="panel-heading" style="border-radius: 0px">
+            <span class="glyphicon glyphicon-comment"></span> Chat
+        </div>
+        <div class="panel-body">
+            <ul class="chat" id="chat-content">
+
+            </ul>
+        </div>
+        <div class="panel-footer">
+            <div class="input-group">
+                <input id="txtMessage" type="text" class="form-control input-sm" placeholder="Type your message here..." />
+                <span class="input-group-btn">
+                    <button class="btn btn-warning btn-sm" id="btn-chat">
+                        Send</button>
+                    <input type="hidden" id="username" value="<%= username %>">
+                    <input type="hidden" id="email" value="<%= email %>">
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.panel .chat-panel -->
