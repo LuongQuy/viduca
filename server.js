@@ -16,7 +16,7 @@ var fs = require('fs');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '80');
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
@@ -24,8 +24,8 @@ app.set('port', port);
  */
 
 var options = {
-  key: fs.readFileSync('./SSL/openvidukey.pem'),
-  cert: fs.readFileSync('./SSL/openviducert.pem')
+  key: fs.readFileSync('/etc/letsencrypt/live/viduca.tk/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/viduca.tk/fullchain.pem')
 };
 
 var server = https.createServer(options, app);
