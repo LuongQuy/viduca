@@ -45,13 +45,12 @@
                     data: formData,
                     processData: false,
                     contentType: false,
-                    success: function(res){
+                })
+                .done(function(res){
                         showSlide(res);
                         $('#addSlideModal').modal('hide');
                         $('#file').val('');
-                    }
                 })
-                return false;
             });
         });  
     </script>

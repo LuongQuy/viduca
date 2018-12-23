@@ -51,7 +51,7 @@ app.get('/upload-slide', (req, res) => {
 var Courses = require('./models/course');
 var formidable = require('formidable');
 app.post('/upload-slide', function (req, res, next) { 
-  res.end('hello world');
+  // res.end('hello world');
   var courseID = req.query.courseID;
   console.log('courseID : ' + courseID);
   var form = new formidable.IncomingForm();

@@ -8,7 +8,6 @@ var app = require('./app');
 var debug = require('debug')('viduca:server');
 var https = require('https');
 // var http = require('http');
-var https = require('https');
 var fs = require('fs');
 
 

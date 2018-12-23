@@ -1,6 +1,6 @@
 const OpenVidu = require('openvidu-node-client').OpenVidu;
-// const OV = new OpenVidu('http://45.77.242.35:4443', 'MY_SECRET');
-const OV = new OpenVidu('https://45.77.242.35:4443', 'MY_SECRET');
+const OV = new OpenVidu('https://207.148.118.122:4443', 'MY_SECRET');
+// const OV = new OpenVidu('localhost:4443', 'MY_SECRET');
 var mapSessions = {};
 var mapSessionNamesTokens = {};
 
