@@ -24,8 +24,8 @@ app.set('port', port);
  */
 
 var options = {
-  key: fs.readFileSync('/etc/letsencrypt/live/viduca.tk/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/viduca.tk/fullchain.pem')
+  key: fs.readFileSync('./SSL/openvidukey.pem'),
+  cert: fs.readFileSync('./SSL/openviducert.pem')
 };
 
 var server = https.createServer(options, app);
