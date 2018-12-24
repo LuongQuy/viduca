@@ -6,8 +6,8 @@
 
 var app = require('./app');
 var debug = require('debug')('viduca:server');
-// var https = require('https');
-var http = require('http');
+var https = require('https');
+// var http = require('http');
 var fs = require('fs');
 
 
@@ -15,20 +15,20 @@ var fs = require('fs');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '80');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-// var options = {
-//   key: fs.readFileSync('./SSL/openvidukey.pem'),
-//   cert: fs.readFileSync('./SSL/openviducert.pem')
-// };
+var options = {
+  key: fs.readFileSync('./SSL/openvidukey.pem'),
+  cert: fs.readFileSync('./SSL/openviducert.pem')
+};
 
-// var server = https.createServer(options, app);
-var server = http.createServer(app);
+var server = https.createServer(options, app);
+// var server = http.createServer(app);
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 /**
