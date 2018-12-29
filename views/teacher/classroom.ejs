@@ -46,11 +46,22 @@
                     processData: false,
                     contentType: false,
                 })
-                .done(function(res){
+                    .done(function (res) {
                         showSlide(res);
+                        session.signal({
+                            data: res,
+                            to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
+                            type: 'send slide event'             // The type of message (optional)
+                        })
+                            .then(() => {
+                                console.log('send slide event successfully sent');
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
                         $('#addSlideModal').modal('hide');
                         $('#file').val('');
-                })
+                    })
             });
         });  
     </script>

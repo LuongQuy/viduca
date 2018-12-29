@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
+const helmet = require('helmet');
 
 var fs = require('fs');
 
@@ -17,6 +18,7 @@ var learnerRouter = require('./routes/learner');
 var teacherRouter = require('./routes/teacher');
 
 var app = express();
+app.use(helmet());
 
 app.use(session({
   secret: 'secret',
