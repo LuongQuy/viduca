@@ -5,21 +5,29 @@ const openviduController = require('../openviduController');
 // const OV = new OpenVidu('https://45.77.242.35:4443', 'MY_SECRET');
 
 exports.getCourses = (req, res) => {
-    if(req.user.role === 'LEARNER'){
+    const userId = req.user._id;
+    if (req.user.role === 'LEARNER') {
         var username = '';
-        if(typeof req.user.info.lastname != 'undefined'){username += req.user.info.lastname;}
-        if(typeof req.user.info.firstname != 'undefined'){username += ' ' + req.user.info.firstname;}
-        users.findById(req.user._id)
-        .populate('belongCourses')
-        .exec((err, user) => {
+        if (typeof req.user.info.lastname != 'undefined') { username += req.user.info.lastname; }
+        if (typeof req.user.info.firstname != 'undefined') { username += ' ' + req.user.info.firstname; }
+        courses.find({ learner: userId }, (err, courses) => {
             res.render('learner/course-list', {
-                courses: user.belongCourses,
+                courses: courses,
                 username: username,
                 email: req.user.local.email
-            }); 
-        });
+            });
+        })
+        // users.findById(req.user._id)
+        // .populate('belongCourses')
+        // .exec((err, user) => {
+        //     res.render('learner/course-list', {
+        //         courses: user.belongCourses,
+        //         username: username,
+        //         email: req.user.local.email
+        //     }); 
+        // });
     }
-    else if(req.user.role === 'TEACHER')
+    else if (req.user.role === 'TEACHER')
         res.redirect('/teacher/courses');
 }
 
